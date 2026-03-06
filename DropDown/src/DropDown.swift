@@ -559,35 +559,65 @@ private extension DropDown {
 
 extension DropDown {
 
-	public override func updateConstraints(height: Int? = nil, isScroll: Bool? = nil) {
-		if !didSetupConstraints {
-			setupConstraints()
-		}
-
-		didSetupConstraints = true
-
-		let layout = computeLayout()
-
-		if !layout.canBeDisplayed {
-			super.updateConstraints()
-			hide()
-
-			return
-		}
-
-		xConstraint.constant = layout.x
-		yConstraint.constant = layout.y
-		widthConstraint.constant = layout.width
-		heightConstraint.constant = height != nil ? height : layout.visibleHeight
-
-		tableView.isScrollEnabled = isScroll != nil ? isScroll! : layout.offscreenHeight > 0
-
-		DispatchQueue.main.async { [weak self] in
-			self?.tableView.flashScrollIndicators()
-		}
-
-		super.updateConstraints()
-	}
+	public override func updateConstraints() {
+        if !didSetupConstraints {
+            setupConstraints()
+        }
+        
+        didSetupConstraints = true
+        
+        let layout = computeLayout()
+        
+        if !layout.canBeDisplayed {
+            super.updateConstraints()
+            hide()
+            
+            return
+        }
+        
+        xConstraint.constant = layout.x
+        yConstraint.constant = layout.y
+        widthConstraint.constant = layout.width
+        heightConstraint.constant = layout.visibleHeight
+        
+        tableView.isScrollEnabled = layout.offscreenHeight > 0
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.flashScrollIndicators()
+        }
+        
+        super.updateConstraints()
+    }
+    
+    public func setScroll(height: Int? = nil, isScroll: Bool? = nil) {
+        if !didSetupConstraints {
+            setupConstraints()
+        }
+        
+        didSetupConstraints = true
+        
+        let layout = computeLayout()
+        
+        if !layout.canBeDisplayed {
+            super.updateConstraints()
+            hide()
+            
+            return
+        }
+        
+        xConstraint.constant = layout.x
+        yConstraint.constant = layout.y
+        widthConstraint.constant = layout.width
+        heightConstraint.constant = height != nil ? CGFloat(height!) : layout.visibleHeight
+        
+        tableView.isScrollEnabled = isScroll != nil ? isScroll! : layout.offscreenHeight > 0
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.tableView.flashScrollIndicators()
+        }
+        
+        super.updateConstraints()
+    }
 
 	fileprivate func setupConstraints() {
 		translatesAutoresizingMaskIntoConstraints = false
