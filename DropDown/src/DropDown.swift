@@ -559,7 +559,7 @@ private extension DropDown {
 
 extension DropDown {
 
-	public override func updateConstraints() {
+	public override func updateConstraints(height: Int? = nil, isScroll: Bool? = nil) {
 		if !didSetupConstraints {
 			setupConstraints()
 		}
@@ -578,9 +578,9 @@ extension DropDown {
 		xConstraint.constant = layout.x
 		yConstraint.constant = layout.y
 		widthConstraint.constant = layout.width
-		heightConstraint.constant = 150
+		heightConstraint.constant = height != nil ? height : layout.visibleHeight
 
-		tableView.isScrollEnabled = true
+		tableView.isScrollEnabled = isScroll != nil ? isScroll! : layout.offscreenHeight > 0
 
 		DispatchQueue.main.async { [weak self] in
 			self?.tableView.flashScrollIndicators()
